@@ -8,9 +8,14 @@ final class Helpers
     {
     }
 
-    public static function baseUrl(string $subpath = null): string
+    public static function baseUrl(string $subpath = ""): string
     {
-        return CONF_BASE_URL . preg_replace("/\/+/i", "/", $subpath);
+        $subpath = array_reduce(
+            explode("/", $subpath),
+            fn($subpath, $uri) => $subpath . "/" . str_replace("/", "", $uri),
+            ""
+        );
+        return CONF_BASE_URL . $subpath;
     }
 
     public static function minify(string $string): string
@@ -18,14 +23,10 @@ final class Helpers
         return preg_replace(
             "/> +</",
             "><",
-            str_replace(
-                ["\r", "\n"],
-                "",
-                preg_replace(
-                    "/ +/i",
-                    " ",
-                    $string,
-                )
+            preg_replace(
+                "/\s+/i",
+                " ",
+                $string,
             )
         );
     }
