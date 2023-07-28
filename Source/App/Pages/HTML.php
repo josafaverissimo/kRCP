@@ -15,7 +15,7 @@ abstract class HTML
 
     public function __toString(): string
     {
-        return $this->render();
+        return Helpers::minify($this->render());
     }
 
     abstract protected function body(): string;
@@ -100,20 +100,7 @@ abstract class HTML
         $head = $this->head($this->getTitle(), $styles);
         $body = $this->body();
         $footer = $this->footer($scripts);
-        $html = "{$head}{$body}{$footer}";
 
-        return preg_replace(
-            "/> +</",
-            "><",
-            str_replace(
-                ["\r", "\n"],
-                "",
-                preg_replace(
-                    "/ +/i",
-                    " ",
-                    $html,
-                )
-            )
-        );
+        return "{$head}{$body}{$footer}";
     }
 }
