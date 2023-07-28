@@ -3,6 +3,7 @@
 namespace Source\App\Pages\User;
 
 use Source\App\Pages\HTML;
+use Source\Core\Helpers;
 
 class Index extends HTML
 {
@@ -20,25 +21,32 @@ class Index extends HTML
         $this->data = [];
     }
 
-    public function __set(string $key, mixed $value): void
+    public function __set(string $key, $value): void
     {
         $this->data[$key] = $value;
     }
 
     protected function body(): string
     {
+        $formLink = Helpers::baseUrl("user/form");
         $usersHTML = "";
 
         if(!empty($this->data["users"])) {
             foreach($this->data["users"] as $user) {
-                $usersHTML .= "<code>" . json_encode($user) . "</code>";
+                $usersHTML .= "<div><code>" . json_encode($user) . "</code></div>";
             }
         }
 
         return <<<HTML
             <main>
-                <h1>Index</h1>
-                {$usersHTML}
+                <div>
+                    <h1>Index</h1>
+                    <a href="{$formLink}">Form</a>
+                </div>
+                
+                <div>
+                    {$usersHTML}
+                </div>
             </main>
         HTML;
     }
