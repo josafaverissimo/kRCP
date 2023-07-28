@@ -6,32 +6,18 @@ use Source\Core\Helpers;
 
 abstract class HTML
 {
-    private string $title;
+    private string $icon;
 
-    protected function __construct(string $title)
+    abstract protected function body(): string;
+
+    public function __construct()
     {
-        $this->setTitle($title);
+        $this->setIcon(Helpers::baseUrl(CONF_HTML_DEFAULT_ICON));
     }
 
     public function __toString(): string
     {
         return Helpers::minify($this->render());
-    }
-
-    abstract protected function body(): string;
-
-    abstract protected function getStyles(): ?array;
-
-    abstract protected function getScripts(): ?array;
-
-    private function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    private function setTitle(string $title): void
-    {
-        $this->title = $title;
     }
 
     private function getStyleUrl($style): string
@@ -42,6 +28,16 @@ abstract class HTML
     private function getScriptUrl($script): string
     {
         return Helpers::baseUrl("public/assets/js/{$script}");
+    }
+
+    protected function setIcon(string $path): void
+    {
+        $this->icon = $path;
+    }
+
+    protected function getIcon(): string
+    {
+        return $this->icon;
     }
 
     protected function head(string $title, ?array $styles = null): string
@@ -59,13 +55,14 @@ abstract class HTML
         <html lang="pt-br">
             <head>
                 <title>{$title}</title>
+                <link rel="icon" type="image/x-icon" href="{$this->getIcon()}">
                 {$styleSheetsHTML}
             </head>
             <body>
         HTML;
     }
 
-    protected function footer(array $scripts = null): string
+    protected function footer(?array $scripts = null): string
     {
         $scriptsHTML = "";
 
@@ -86,18 +83,18 @@ abstract class HTML
 
     protected function render(): string
     {
-        $styles = $this->getStyles();
-        $scripts = $this->getScripts();
+        $styles = static::STYLES;
+        $scripts = static::SCRIPTS;
 
         if (!empty($styles)) {
-            $styles = array_map([$this, "getStyleUrl"], $this->getStyles());
+            $styles = array_map([$this, "getStyleUrl"], $styles);
         }
 
         if(!empty($scripts)) {
-            $scripts = array_map([$this, "getScriptUrl"], $this->getScripts());
+            $scripts = array_map([$this, "getScriptUrl"], $scripts);
         }
 
-        $head = $this->head($this->getTitle(), $styles);
+        $head = $this->head(static::TITLE, $styles);
         $body = $this->body();
         $footer = $this->footer($scripts);
 
