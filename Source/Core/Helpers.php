@@ -10,7 +10,7 @@ final class Helpers
 
     public static function baseUrl(string $subpath = null): string
     {
-        return preg_replace("/\/+/i", "/", CONF_BASE_URL . $subpath);
+        return CONF_BASE_URL . preg_replace("/\/+/i", "/", $subpath);
     }
 
     public static function minify(string $string): string
