@@ -8,6 +8,4 @@ $routes = new Routes();
 
 $routes->route("/", CONF_DEFAULT_CONTROLLER);
 
-$routes->route("/route", "Controller:method");
-
 $routes->dispatch();

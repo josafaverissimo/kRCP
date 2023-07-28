@@ -20,9 +20,9 @@ abstract class HTML
 
     abstract protected function body(): string;
 
-    abstract protected function getStyles(): array;
+    abstract protected function getStyles(): ?array;
 
-    abstract protected function getScripts(): array;
+    abstract protected function getScripts(): ?array;
 
     private function getTitle(): string
     {
@@ -86,22 +86,34 @@ abstract class HTML
 
     protected function render(): string
     {
-        $styles = array_map([$this, "getStyleUrl"], $this->getStyles());
-        $scripts = array_map([$this, "getScriptUrl"], $this->getScripts());
+        $styles = $this->getStyles();
+        $scripts = $this->getScripts();
+
+        if (!empty($styles)) {
+            $styles = array_map([$this, "getStyleUrl"], $this->getStyles());
+        }
+
+        if(!empty($scripts)) {
+            $scripts = array_map([$this, "getScriptUrl"], $this->getScripts());
+        }
 
         $head = $this->head($this->getTitle(), $styles);
         $body = $this->body();
         $footer = $this->footer($scripts);
         $html = "{$head}{$body}{$footer}";
 
-        return preg_replace("/> +</", "><", str_replace(
-            ["\r", "\n"],
-            "",
-            preg_replace(
-                "/ +/i",
-                " ",
-                $html,
+        return preg_replace(
+            "/> +</",
+            "><",
+            str_replace(
+                ["\r", "\n"],
+                "",
+                preg_replace(
+                    "/ +/i",
+                    " ",
+                    $html,
+                )
             )
-        ));
+        );
     }
 }

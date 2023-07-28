@@ -2,7 +2,7 @@
 
 namespace Source\Core;
 
-use Source\App\Controllers\Card;
+use Source\App\Controllers\Home;
 
 class Routes
 {
