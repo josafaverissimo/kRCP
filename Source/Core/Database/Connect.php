@@ -7,10 +7,10 @@ use \PDOException;
 
 class Connect
 {
-    private const HOST = CONF_DB["host"];
-    private const USER = CONF_DB["user"];
-    private const DBNAME = CONF_DB["name"];
-    private const PASSWORD = CONF_DB["password"];
+    private const HOST = CONF_DB_HOST;
+    private const USER = CONF_DB_USER;
+    private const DBNAME = CONF_DB_NAME;
+    private const PASSWORD = CONF_DB_PASSWORD;
 
     private const OPTIONS = [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
@@ -35,7 +35,7 @@ class Connect
                     self::OPTIONS
                 );
             } catch(PDOException $exception) {
-                die("<h1>Erro ao conectar ao banco de dados</h1>");
+                die($exception->getMessage());
             }
         }
 
@@ -48,6 +48,5 @@ class Connect
 
     private function __clone()
     {
-
     }
 }
