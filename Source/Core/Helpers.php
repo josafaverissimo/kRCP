@@ -15,7 +15,8 @@ final class Helpers
             fn($subpath, $uri) => $subpath . "/" . str_replace("/", "", $uri),
             ""
         );
-        return CONF_BASE_URL . $subpath;
+
+        return CONF_BASE_URL . preg_replace("/\/+/", "/", $subpath);
     }
 
     public static function minify(string $string): string
@@ -29,5 +30,16 @@ final class Helpers
                 $string,
             )
         );
+    }
+
+    public static function jsonOutput(mixed $output): string
+    {
+        header("Content-type: Application/json");
+        return json_encode($output);
+    }
+
+    public static function passwordHash(string $password): string
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 }
