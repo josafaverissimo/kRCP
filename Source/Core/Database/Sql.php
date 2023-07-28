@@ -2,12 +2,12 @@
 
 namespace Source\Core\Database;
 
-use http\Exception;
 use \PDOException;
+use \PDO;
 
 class Sql
 {
-    private static PDOException $fail;
+    private static ?PDOException $fail;
 
     final private function __construct()
     {
@@ -23,34 +23,25 @@ class Sql
         try {
             $columns = implode(",", array_keys($data));
             $values = ":" . implode(",:", array_keys($data));
-            $query = "INSERT INTO {$entity} ({$columns}) values ({$values})";
+            $query = "INSERT INTO {$entity} ({$columns}) VALUES ({$values})";
 
-            $stmt = Connect::getInstance()->prepare($query);
-            $stmt->execute($data);
+            $statement = Connect::getInstance()->prepare($query);
+            $statement->execute($data);
 
             return true;
-        } catch (PDOException $exception) {
+        } catch(PDOException $exception) {
             self::$fail = $exception;
-
             return false;
         }
     }
 
-    public static function getAll(string $entity, string $columns = "*"): ?array
+    public static function select(string $entity, string $columns = "*"): ?array
     {
-        try {
-            $query = "SELECT * FROM {$entity}";
+        $query = "SELECT {$columns} FROM {$entity}";
 
-            $stmt = Connect::getInstance()->prepare($query);
-            $stmt->execute();
+        $statement = Connect::getInstance()->prepare($query);
+        $statement->execute();
 
-            return $stmt->fetchAll();
-        } catch(PDOException $exception) {
-            self::$fail = $exception;
-
-            return null;
-        }
-
-
+        return $statement->fetchAll();
     }
 }
