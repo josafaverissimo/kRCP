@@ -1,8 +1,8 @@
 <?php
 
-namespace Source\App\Pages;
+namespace Src\App\Pages;
 
-use Source\Core\Helpers;
+use Src\Core\Helpers;
 
 abstract class HTML
 {

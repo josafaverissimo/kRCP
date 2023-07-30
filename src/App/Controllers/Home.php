@@ -1,8 +1,8 @@
 <?php
 
-namespace Source\App\Controllers;
+namespace Src\App\Controllers;
 
-use Source\App\Pages\Home as HomePage;
+use Src\App\Pages\Home as HomePage;
 
 class Home
 {

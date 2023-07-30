@@ -1,6 +1,6 @@
 <?php
 
-namespace Source\Core\Database;
+namespace Src\Core\Database;
 
 use \PDOException;
 use \PDO;
@@ -29,18 +29,26 @@ class Sql
             $statement->execute($data);
 
             return true;
-        } catch(PDOException $exception) {
+        } catch (PDOException $exception) {
             self::$fail = $exception;
             return false;
         }
     }
 
-    public static function select(string $entity, string $columns = "*"): ?array
+    public static function select(string $entity, array $param = [], array $columns = []): ?array
     {
-        $query = "SELECT {$columns} FROM {$entity}";
+        $columns = !empty($columns) ? implode(",", $columns) : "*";
+        $where = "";
+
+        if (!empty($param)) {
+            $paramColumn = array_keys($param)[0];
+            $where = " WHERE {$paramColumn}=:{$paramColumn}";
+        }
+
+        $query = "SELECT {$columns} FROM {$entity}" . $where;
 
         $statement = Connect::getInstance()->prepare($query);
-        $statement->execute();
+        $statement->execute($param);
 
         return $statement->fetchAll();
     }

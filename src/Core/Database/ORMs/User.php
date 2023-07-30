@@ -1,10 +1,10 @@
 <?php
 
-namespace Source\Core\Database\ORMs;
+namespace Src\Core\Database\ORMs;
 
-use Source\App\DTOs\User as UserDTO;
-use Source\Core\Database\Sql;
-use Source\Core\Helpers;
+use Src\App\DTOs\User as UserDTO;
+use Src\Core\Database\Sql;
+use Src\Core\Helpers;
 
 
 class User
@@ -80,6 +80,11 @@ class User
     public function getAll(): array
     {
         return Sql::select(self::ENTITY);
+    }
+
+    public function get(string $column, string $value): mixed
+    {
+        return Sql::select(self::ENTITY, [$column => $value]);
     }
 
     public function persist(): bool

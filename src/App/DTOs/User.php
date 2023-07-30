@@ -1,6 +1,6 @@
 <?php
 
-namespace Source\App\DTOs;
+namespace Src\App\DTOs;
 
 class User
 {

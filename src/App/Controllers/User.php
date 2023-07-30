@@ -1,12 +1,12 @@
 <?php
 
-namespace Source\App\Controllers;
+namespace Src\App\Controllers;
 
-use Source\App\Pages\User\Index as UserIndexPage;
-use Source\App\Pages\User\Form as UserFormPage;
-use Source\App\DTOs\User as UserDTO;
-use Source\Core\Database\ORMs\User as UserORM;
-use Source\Core\Response;
+use Src\App\Pages\User\Index as UserIndexPage;
+use Src\App\Pages\User\Form as UserFormPage;
+use Src\App\DTOs\User as UserDTO;
+use Src\Core\Database\ORMs\User as UserORM;
+use Src\Core\Response;
 
 class User
 {
@@ -47,4 +47,11 @@ class User
         echo $response->jsonOutput();
     }
 
+    public function getUser(string $hash): void
+    {
+        $userORM = new UserORM();
+        $data = $userORM->get("hash", $hash);
+
+        echo json_encode($data);
+    }
 }

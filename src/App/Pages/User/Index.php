@@ -1,9 +1,9 @@
 <?php
 
-namespace Source\App\Pages\User;
+namespace Src\App\Pages\User;
 
-use Source\App\Pages\HTML;
-use Source\Core\Helpers;
+use Src\App\Pages\HTML;
+use Src\Core\Helpers;
 
 class Index extends HTML
 {
