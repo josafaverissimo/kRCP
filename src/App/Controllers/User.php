@@ -59,4 +59,9 @@ class User
     {
         echo "{$name} is $age years old";
     }
+
+    public function showMoney($bufunfa)
+    {
+        echo "R\${$bufunfa}";
+    }
 }

@@ -14,13 +14,16 @@ class Router
     ];
     private array $routes;
     private array $groupOptions;
-    private Uri $uri;
 
 
     public function __construct()
     {
         $this->groupOptions = [];
-        $this->uri = new Uri();
+    }
+
+    public function middlewares(array $middlewares)
+    {
+        $this->routeMiddlewares = $middlewares;
     }
 
     private function route(string $httpMethod, string $resource, string $controllerAndMethod): void
@@ -35,14 +38,14 @@ class Router
             $classPath = self::CONTROLLER_NAMESPACE . "{$className}";
         }
 
-        foreach (self::ROUTES_PATTERNS as $patternIdentifier => $pattern) {
-            $resource = str_replace($patternIdentifier, $pattern, $resource);
-        }
+        $resource = RouteWildcard::replaceWildcard($resource);
 
         if ($this->groupOptionExists("prefix")) {
             $prefix = $this->getGroupOption("prefix");
             $resource = "/{$prefix}" . rtrim($resource, "/");
         }
+
+        xdebug_var_dump($this->groupOptions);
 
         $this->routes[$httpMethod][$resource] = function (...$args) use ($classPath, $method) {
             $controller = new $classPath;
@@ -50,31 +53,39 @@ class Router
         };
     }
 
-    public function group(array $options, Closure $callback)
+    public function group(array $options, Closure $callback): void
     {
         $this->groupOptions = $options;
         $callback->call($this);
         $this->groupOptions = [];
     }
 
-    public function get(string $resource, string $controllerAndMethod): void
+    public function get(string $resource, string $controllerAndMethod): Router
     {
         $this->route("get", $resource, $controllerAndMethod);
+
+        return $this;
     }
 
-    public function post(string $resource, string $controllerAndMethod): void
+    public function post(string $resource, string $controllerAndMethod): Router
     {
         $this->route("post", $resource, $controllerAndMethod);
+
+        return $this;
     }
 
-    public function put(string $resource, string $controllerAndMethod): void
+    public function put(string $resource, string $controllerAndMethod): Router
     {
         $this->route("put", $resource, $controllerAndMethod);
+
+        return $this;
     }
 
-    public function delete(string $resource, string $controllerAndMethod): void
+    public function delete(string $resource, string $controllerAndMethod): Router
     {
         $this->route("delete", $resource, $controllerAndMethod);
+
+        return $this;
     }
 
     private function error404(): void
@@ -100,13 +111,12 @@ class Router
 
     private function getRoute($request): ?string
     {
-        $httpMethod = $this->uri->getHttpMethodRequest();
+        $httpMethod = Uri::getHttpMethodRequest();
         $routes = array_keys($this->routes[$httpMethod]);
+        RouteWildcard::uriEqualToPattern($request, $routes[5]);
 
         foreach ($routes as $route) {
-            $pattern = str_replace("/", '\/', ltrim($route, "/"));
-
-            if (preg_match("/^$pattern$/", ltrim($request, "/"))) {
+            if (RouteWildcard::uriEqualToPattern($request, $route)) {
                 return $route;
             }
         }
@@ -116,7 +126,7 @@ class Router
 
     public function dispatch(): void
     {
-        $request = $this->uri->getUri();
+        $request = Uri::getCurrentUri();
         $route = $this->getRoute($request);
 
         if (empty($route)) {
@@ -124,16 +134,8 @@ class Router
             return;
         }
 
-        $httpMethod = $this->uri->getHttpMethodRequest();
-
-        $routeExploded = explode("/", ltrim($route, "/"));
-        $requestExploded = explode("/", ltrim($request, "/"));
-        $routeAndRequestDiff = array_diff($requestExploded, $routeExploded);
-        $params = [];
-
-        foreach ($routeAndRequestDiff as $index => $uri) {
-            $params[$requestExploded[$index - 1]] = $uri;
-        }
+        $httpMethod = Uri::getHttpMethodRequest();
+        $params = RouteWildcard::paramsToArray($request, $route);
 
         $this->routes[$httpMethod][$route](...$params);
     }
