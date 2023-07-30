@@ -54,4 +54,9 @@ class User
 
         echo json_encode($data);
     }
+
+    public function doUser(string $name, int $age)
+    {
+        echo "{$name} is $age years old";
+    }
 }

@@ -2,15 +2,21 @@
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-use Src\Core\Router;
+use Src\Core\Router\Router;
 
 $routes = new Router();
 
-$routes->route("/", CONF_DEFAULT_CONTROLLER);
+$routes->get("/", CONF_DEFAULT_CONTROLLER);
 
-$routes->route("/user", "User:index");
-$routes->route("/user/form", "User:form");
-$routes->route("/user/create", "User:create");
-$routes->route("/user/get/:hash", "User:getUser");
+$routes->get("/user", "User:index");
+$routes->get("/user/form", "User:form");
+$routes->get("/user/create", "User:create");
+$routes->get("/user/get/(:numeric)", "User:getUser");
+$routes->get("/user/name/(:alpha)/age/(:numeric)", "User:doUser");
+
+$routes->group(["prefix" => "admin", "controllersDir" => "Admin", "middlewares" => []], function() {
+    $this->get("/", "Admin:index");
+    $this->get("/user/delete/name/(:alpha)", "User:deleteUser");
+});
 
 $routes->dispatch();

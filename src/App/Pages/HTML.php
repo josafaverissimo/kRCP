@@ -7,17 +7,24 @@ use Src\Core\Helpers;
 abstract class HTML
 {
     private string $icon;
+    protected array $data;
 
     abstract protected function body(): string;
 
     public function __construct()
     {
         $this->setIcon(Helpers::baseUrl(CONF_HTML_DEFAULT_ICON));
+        $this->data = [];
     }
 
     public function __toString(): string
     {
         return Helpers::minify($this->render());
+    }
+
+    public function __set(string $key, $value): void
+    {
+        $this->data[$key] = $value;
     }
 
     private function getStyleUrl($style): string
