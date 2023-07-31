@@ -8,12 +8,14 @@ $routes = new Router();
 
 $routes->get("/", CONF_DEFAULT_CONTROLLER);
 
-$routes->get("/user", "User:index");
-$routes->get("/user/form", "User:form");
-$routes->get("/user/create", "User:create");
-$routes->get("/user/get/(:numeric)", "User:getUser");
-$routes->get("/user/name/(:alpha)/age/(:numeric)", "User:doUser");
-$routes->get("/user/money/(:numeric)", "User:showMoney", ["bufunfa"]);
+$routes->group(["prefix" => "user"], function() {
+    $this->get("/", "User:index");
+    $this->get("/form", "User:form");
+    $this->post("/create", "User:create");
+    $this->get("/get/(:numeric)", "User:getUser");
+    $this->get("/name/(:alpha)/age/(:numeric)", "User:doUser");
+    $this->get("/money/(:numeric)", "User:showMoney");
+});
 
 $routes->group(["prefix" => "admin", "controllersDir" => "Admin", "middlewares" => ["Auth", "Log"]], function() {
     $this->get("/", "Admin:index");

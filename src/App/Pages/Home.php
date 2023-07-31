@@ -28,7 +28,7 @@ class Home extends HTML
                 <h1>Welcome to my MVC Framework, kRCP</h1>
                 <p>k - Kiris</p>
                 <p>R - Routing</p>
-                <p>C - Centralizer</p>
+                <p>C - Controller</p>
                 <p>P - Page</p>
                 
                 <a href="{$userLink}">A simple crud</a>

@@ -1,4 +1,4 @@
-async function sendData(formData, target) {
+async function sendData(formData: FormData, target: string) {
     const response = await fetch(target, {
         method: "post",
         body: formData
@@ -9,15 +9,18 @@ async function sendData(formData, target) {
 document.addEventListener("DOMContentLoaded", () => {
     const mainForm = document.getElementById("main-form")
 
+    if(!mainForm) {
+        return
+    }
+
     mainForm.addEventListener("submit", event => {
         event.preventDefault()
-        const form = event.target
 
         const formData = new FormData();
-        formData.append("username", form.username.value)
-        formData.append("password", form.password.value)
+        formData.append("username", mainForm.username.value)
+        formData.append("password", mainForm.password.value)
 
-        sendData(formData, form.action).then(json => {
+        sendData(formData, mainForm.action).then(json => {
             console.log(json)
         })
     })
