@@ -3,9 +3,7 @@ async function sendData(formData, target) {
         method: "post",
         body: formData
     })
-    const jsonData = await response.json()
-
-    return jsonData
+    return await response.json()
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("username", form.username.value)
         formData.append("password", form.password.value)
 
-        sendData(formData, form.action)
+        sendData(formData, form.action).then(json => {
+            console.log(json)
+        })
     })
 })

@@ -29,12 +29,12 @@ abstract class HTML
 
     private function getStyleUrl($style): string
     {
-        return Helpers::baseUrl("public/assets/css/{$style}");
+        return Helpers::baseUrl("assets/css/{$style}");
     }
 
     private function getScriptUrl($script): string
     {
-        return Helpers::baseUrl("public/assets/js/{$script}");
+        return Helpers::baseUrl("assets/js/{$script}");
     }
 
     protected function setIcon(string $path): void
@@ -75,7 +75,7 @@ abstract class HTML
 
         if (!empty($scripts)) {
             foreach ($scripts as $script) {
-                $scriptsHTML .= "<script src='{$script}'></script>";
+                $scriptsHTML .= "<script src='{$script}' type='module'></script>";
             }
         }
 

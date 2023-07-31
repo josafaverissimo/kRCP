@@ -45,8 +45,6 @@ class Router
             $resource = "/{$prefix}" . rtrim($resource, "/");
         }
 
-        xdebug_var_dump($this->groupOptions);
-
         $this->routes[$httpMethod][$resource] = function (...$args) use ($classPath, $method) {
             $controller = new $classPath;
             $controller->$method(...$args);

@@ -9,4 +9,4 @@ const CONF_DB_USER = "josafaverissimo";
 const CONF_DB_NAME = "krcp";
 const CONF_DB_PASSWORD = "root";
 
-const CONF_HTML_DEFAULT_ICON = "public/assets/imgs/page-icon.jpeg";
+const CONF_HTML_DEFAULT_ICON = "assets/imgs/page-icon.jpeg";
