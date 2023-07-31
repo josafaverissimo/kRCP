@@ -10,29 +10,41 @@ class RouteWildcard
         "(:any)" => "[a-zA-Z0-9\-]+"
     ];
 
-    public static function paramsToArray($request, string $route, ?array $aliases = null): array
+    private array $params;
+
+    public function __construct()
+    {
+        $this->params = [];
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    public function paramsToArray($request, string $route, ?array $aliases = null): array
     {
         $routeExploded = explode("/", ltrim($route, "/"));
         $requestExploded = explode("/", ltrim($request, "/"));
         $routeAndRequestDiff = array_diff($requestExploded, $routeExploded);
-        $params = [];
+        $this->params = [];
 
         foreach($routeAndRequestDiff as $index => $param) {
             if(empty($aliases)) {
-                $params[] = $param;
+                $this->params[] = $param;
             }
         }
 
-        return $params;
+        return $this->getParams();
     }
 
-    public static function uriEqualToPattern($currentUri, $wildcardReplaced): bool
+    public function uriEqualToPattern(string $currentUri, string $wildcardReplaced): bool
     {
         $pattern = str_replace("/", '\/', ltrim($wildcardReplaced, "/"));
         return preg_match("/^$pattern$/", ltrim($currentUri, "/"));
     }
 
-    public static function replaceWildcard(string $uriToReplace): string
+    public function replaceWildcard(string $uriToReplace): string
     {
         $wildcardReplaced = $uriToReplace;
         foreach (self::WILDCARDS as $wildcard => $pattern) {

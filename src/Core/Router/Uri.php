@@ -4,7 +4,23 @@ namespace Src\Core\Router;
 
 class Uri
 {
-    public static function getCurrentUri(): string
+    private string $customUri;
+    public function __construct(string $customUri = "")
+    {
+        $this->setCustomUri($customUri);
+    }
+
+    public function getCustomUri(): string
+    {
+        return $this->customUri;
+    }
+
+    public function setCustomUri(string $customUri): void
+    {
+        $this->customUri = $customUri;
+    }
+
+    public function getCurrentUri(): string
     {
         if ($_SERVER['REQUEST_URI'] === "/") {
             return "/";
@@ -13,7 +29,7 @@ class Uri
         return rtrim(parse_url($_SERVER['REQUEST_URI'])["path"], "/");
     }
 
-    public static function getHttpMethodRequest(): string
+    public function getHttpMethodRequest(): string
     {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
