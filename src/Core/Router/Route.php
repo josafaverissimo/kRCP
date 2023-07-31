@@ -16,7 +16,7 @@ class Route
         $this->wildcard = new RouteWildcard();
         $this->httpMethod = $httpMethod;
 
-        $this->addOptions($options);
+        $this->setOptions($options);
         $this->setUri($uri);
         $this->setTarget($controllerAndMethod);
     }
@@ -42,8 +42,9 @@ class Route
         ];
     }
 
-    private function addOptions(array $options): void
+    public function setOptions(array $options): void
     {
+
         $this->options = new RouteOptions($options);
     }
 
@@ -75,6 +76,13 @@ class Route
         $currentUri = $this->uri->getCurrentUri();
         $uri = $this->uri->getCustomUri();
         $params = $this->wildcard->paramsToArray($currentUri, $uri);
+
+        if($this->options->has("middlewares")) {
+            $middlewares = $this->options->get("middlewares");
+            $middleware = new Middleware($middlewares);
+
+            $middleware->callThem();
+        }
 
         $controller = new $classPath;
         $controller->$method(...$params);

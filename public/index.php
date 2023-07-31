@@ -15,7 +15,7 @@ $routes->get("/user/get/(:numeric)", "User:getUser");
 $routes->get("/user/name/(:alpha)/age/(:numeric)", "User:doUser");
 $routes->get("/user/money/(:numeric)", "User:showMoney", ["bufunfa"]);
 
-$routes->group(["prefix" => "admin", "controllersDir" => "Admin", "middlewares" => ["auth"]], function() {
+$routes->group(["prefix" => "admin", "controllersDir" => "Admin", "middlewares" => ["Auth", "Log"]], function() {
     $this->get("/", "Admin:index");
     $this->get("/user/delete/name/(:alpha)/age/(:numeric)", "User:deleteUser");
 });

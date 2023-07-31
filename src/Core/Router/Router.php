@@ -6,6 +6,7 @@ use Closure;
 
 class Router
 {
+    private Route $currentRoute;
     private array $routes;
     private array $options;
 
@@ -13,14 +14,19 @@ class Router
     public function __construct()
     {
         $this->options = [];
-        $this->uri = new Uri();
     }
 
     private function route(string $httpMethod, string $resource, string $controllerAndMethod): void
     {
-        $route = new Route($httpMethod, $resource, $controllerAndMethod, $this->options);
+        $this->currentRoute = new Route($httpMethod, $resource, $controllerAndMethod, $this->options);
 
-        $this->routes[] = $route;
+        $this->routes[] = $this->currentRoute;
+    }
+
+    public function middleware(array $middlewares): void
+    {
+        $options = array_merge($this->options, ["middlewares" => $middlewares]);
+        $this->currentRoute->setOptions($options);
     }
 
     public function group(array $options, Closure $callback): void

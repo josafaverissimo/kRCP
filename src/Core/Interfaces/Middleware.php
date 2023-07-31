@@ -4,5 +4,5 @@ namespace Src\Core\Interfaces;
 
 interface Middleware
 {
-    public function execute();
+    public function call(): void;
 }
