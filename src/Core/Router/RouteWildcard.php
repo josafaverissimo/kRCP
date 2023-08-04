@@ -22,17 +22,15 @@ class RouteWildcard
         return $this->params;
     }
 
-    public function paramsToArray($request, string $route, ?array $aliases = null): array
+    public function paramsToArray($request, string $route): array
     {
         $routeExploded = explode("/", ltrim($route, "/"));
         $requestExploded = explode("/", ltrim($request, "/"));
         $routeAndRequestDiff = array_diff($requestExploded, $routeExploded);
         $this->params = [];
 
-        foreach($routeAndRequestDiff as $index => $param) {
-            if(empty($aliases)) {
-                $this->params[] = $param;
-            }
+        foreach($routeAndRequestDiff as $param) {
+            $this->params[] = $param;
         }
 
         return $this->getParams();
